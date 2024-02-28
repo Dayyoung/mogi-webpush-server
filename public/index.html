@@ -94,6 +94,27 @@ function goPush(){
         }
 }
 
+function goPushAll(){
+        var PushClient;
+        if (WebPushClientFactory.isSupported()) {
+            WebPushClientFactory.create({
+                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
+                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
+                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
+            })
+                .then(Client => {
+                    PushClient = Client;
+                    console.log(PushClient);
+                    PushClient.subscribe().then(Subscription => {
+                    console.log(JSON.stringify(Subscription));
+                    var requestUrl = './sendPushForAll';
+                    $.get(requestUrl);
+                    })
+                })
+            ;
+        }
+}
+
     </script>
   <body>
   	<center>
@@ -104,6 +125,8 @@ function goPush(){
 <button class="button" onclick="goUnRegist()"><span>Un-regist Push! 🔔</span></button>
 <p>Send Now :</p>    
 <button class="button" onclick="goPush()"><span>Send Now! 🔔</span></button>
+<p>Send All :</p>    
+<button class="button" onclick="goPushAll()"><span>Send All! 🔔</span></button>
 
 </center>
 <style>
