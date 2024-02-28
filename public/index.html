@@ -17,35 +17,6 @@
     <script src="/js/webpush-client.js"></script>
     <script>
 
-        var PushClient;
-        if (WebPushClientFactory.isSupported()) {
-            WebPushClientFactory.create({
-                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
-                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
-                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
-            })
-                .then(Client => {
-                    PushClient = Client;
-                    console.log(PushClient);
-                    PushClient.subscribe().then(Subscription => {
-                      console.log(JSON.stringify(Subscription));
-                      updateSubscription(Subscription)
-                    })
-                })
-            ;
-        }
-
-function updateSubscription(Subscription){
-  var subscribeString = JSON.stringify(Subscription);
-  console.log(subscribeString)
-  var requestUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeh83n8A7DJ1DtBtzODWNQ5qWbAsf__xj7LNFlNJXHpkOwMxw/formResponse?entry.1882051254="+subscribeString
-  $.get(requestUrl)
-  //$('<iframe id="myFrame" style="display:none" onload="loadCompted();" src="'+requestUrl+'" frameborder="0" scrolling="no"></iframe>').appendTo('body');
-}
-
-function loadCompted(){
-
-}
 
 function goRegist(){
 
@@ -61,13 +32,67 @@ function goRegist(){
                     console.log(PushClient);
                     PushClient.subscribe().then(Subscription => {
                       console.log(JSON.stringify(Subscription));
-                      updateSubscription(Subscription)
+                      
+
+                     var subscribeString = JSON.stringify(Subscription);
+                      console.log(subscribeString)
+                      var requestUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeh83n8A7DJ1DtBtzODWNQ5qWbAsf__xj7LNFlNJXHpkOwMxw/formResponse?entry.1882051254="+subscribeString
+                      $.get(requestUrl)
+                      //$('<iframe id="myFrame" style="display:none" onload="loadCompted();" src="'+requestUrl+'" frameborder="0" scrolling="no"></iframe>').appendTo('body');
+
                     })
                 })
             ;
         }
 }
 
+function goUnRegist(){
+ 
+  var PushClient;
+        if (WebPushClientFactory.isSupported()) {
+            WebPushClientFactory.create({
+                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
+                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
+                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
+            })
+                .then(Client => {
+                    PushClient = Client;
+                    console.log(PushClient);
+                    PushClient.subscribe().then(Subscription => {
+                      console.log(JSON.stringify(Subscription));
+                     var subscribeString = JSON.stringify(Subscription);
+                      console.log(subscribeString)
+                      var requestUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeceGol5sqAORDs-g0YPyrjwXTTgfFRsZ2hLpNgTlgspHEdog/formResponse?entry.1882051254="+subscribeString
+                      $.get(requestUrl)
+                      
+
+                    })
+                })
+            ;
+        }
+}
+
+function goPush(){
+        var PushClient;
+        if (WebPushClientFactory.isSupported()) {
+            WebPushClientFactory.create({
+                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
+                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
+                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
+            })
+                .then(Client => {
+                    PushClient = Client;
+                    console.log(PushClient);
+                    PushClient.subscribe().then(Subscription => {
+                    console.log(JSON.stringify(Subscription));
+                    var requestUrl = './sendPush';
+                    var subscribeJson = JSON.parse(JSON.stringify(Subscription));
+                    $.get(requestUrl,subscribeJson);
+                    })
+                })
+            ;
+        }
+}
 
     </script>
   <body>
@@ -76,9 +101,49 @@ function goRegist(){
 <p>Regist :</p>    
 <button class="button" onclick="goRegist()"><span>Regist Push! 🔔</span></button>
 <p>Un-regist :</p>    
-<button class="button" onclick="alert('Ready..')"><span>Un-regist Push! 🔔</span></button>
+<button class="button" onclick="goUnRegist()"><span>Un-regist Push! 🔔</span></button>
 <p>Send Now :</p>    
-<button class="button" onclick="alert('Ready..')"><span>Send Now! 🔔</span></button>
+<button class="button" onclick="goPush()"><span>Send Now! 🔔</span></button>
+
+</center>
+<style>
+
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 18px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+</stle>  
 
 	</center>
   </body>

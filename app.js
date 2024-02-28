@@ -39,7 +39,7 @@ setInterval(function () {
 function doStuff() {
   // do your stuff here
   var request = require("request");
-  request("https://gnxscd-8080.csb.app", function (error, response, body) {
+  request("https://mogi-webpush-server.onrender.com", function (error, response, body) {
     //callback
     console.log(body);
   });
