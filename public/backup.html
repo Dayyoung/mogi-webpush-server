@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="manifest" href="/manifest.json">
+
+  </head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="
+  https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/js/jquery.loadingModal.min.js
+  "></script>
+  <link href="
+  https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css
+  " rel="stylesheet">
+
+    <script src="/js/webpush-client.js"></script>
+    <script>
+
+var subscribeListUrl =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTj_f-GwMhhdyXqW_JqQ_3lLJMHc6UBJeH34xltArwBk-7grgjbr9KQJYjhYz6R1qEUGBqR4OoWEtwL/pub?output=tsv";
+//var unsubscribeListUrl =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTVwNTgypms0Fezshuc1OLFRO_ggo3d0ApMw9msAz0L9TZzxY3iX5_L3hI6aInnN2a9beRG7dQxjLwg/pub?output=tsv";
+
+  let subscribeList = getJsonListFromTSV(subscribeListUrl);
+//let unsubscribeList = getJsonListFromTSV(unsubscribeListUrl);
+
+console.log(subscribeList); // `response` will be whatever you passed to `resolve()` at the top
+//console.log(unsubscribeList); // `response` will be whatever you passed to `resolve()` at the top
+
+function getJsonListFromTSV(requestUrl) {
+
+  $.ajax({
+          type: "get",            
+          url: requestUrl,         
+          async: false,
+          cache: false,                     
+          success: function(res){ 
+            isSucess = tsvToJSON(res)
+          }
+    });
+  return isSucess;
+}
+
+function tsvToJSON(tsv_string) {
+  const rows = tsv_string.split("\r\n");
+  const jsonArray = [];
+  const header = rows[0].split("\t");
+  for (let i = 1; i < rows.length; i++) {
+    let obj = {};
+    let row = rows[i].split("\t");
+    for (let j = 0; j < header.length; j++) {
+      obj[header[j]] = row[j];
+    }
+    jsonArray.push(obj);
+  }
+  return jsonArray;
+}
+
+        var PushClient;
+        if (WebPushClientFactory.isSupported()) {
+            WebPushClientFactory.create({
+                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
+                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
+                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
+            })
+                .then(Client => {
+                    PushClient = Client;
+                    console.log(PushClient);
+                    PushClient.subscribe().then(Subscription => {
+                      console.log(JSON.stringify(Subscription));
+                      updateSubscription(Subscription)
+                    })
+                })
+            ;
+        }
+
+function updateSubscription(Subscription){
+  var isRegist = false;
+  for(i in subscribeList){
+    if(Subscription == subscribeList[i].Subscription){
+      isRegist = true;
+    }
+  }
+  if(isRegist) return;
+
+  var subscribeString = JSON.stringify(Subscription);
+  console.log(subscribeString)
+  var requestUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeh83n8A7DJ1DtBtzODWNQ5qWbAsf__xj7LNFlNJXHpkOwMxw/formResponse?entry.1882051254="+subscribeString
+  $.get(requestUrl)
+  //$('<iframe id="myFrame" style="display:none" onload="loadCompted();" src="'+requestUrl+'" frameborder="0" scrolling="no"></iframe>').appendTo('body');
+}
+
+function loadCompted(){
+
+}
+
+    </script>
+  <body>
+  	<center>
+    <h1>Success!</h1>
+    <p>Ready to push the message from QYL.</p>    
+
+	</center>
+  </body>
+</html>
+

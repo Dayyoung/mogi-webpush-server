@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="manifest" href="/manifest.json">
+  </head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="
+  https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/js/jquery.loadingModal.min.js
+  "></script>
+  <link href="
+  https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css
+  " rel="stylesheet">
+
+    <script src="/js/webpush-client.js"></script>
+    <script>
+goPush()
+
+function goPush(){
+        var PushClient;
+        if (WebPushClientFactory.isSupported()) {
+            WebPushClientFactory.create({
+                serviceWorkerPath: '/js/webpush-sw1.js', // Public path to the service worker
+                serverKey: 'BH46BdRrMgRmRwgTDArIX8yOC9GxTJMUnTn557z0yN40Qk1VSMrr0SCBXa5N6qABxy7y6eocrtBbdpp3SWsTUgw', // https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol#application_server_keys
+                //subscribeUrl: 'http://localhost:8080/sendEmail', // Optionnal - your application URL to store webpush subscriptions
+            })
+                .then(Client => {
+                    PushClient = Client;
+                    console.log(PushClient);
+                    PushClient.subscribe().then(Subscription => {
+                      console.log(JSON.stringify(Subscription));
+                      updateSubscription(Subscription)
+                    })
+                })
+            ;
+        }
+}
+
+function updateSubscription(Subscription){
+    var requestUrl = 'https://8mcnl2-8080.csb.app/sendPush';
+    var subscribeJson = JSON.parse(JSON.stringify(Subscription));
+    $.get(requestUrl,subscribeJson);
+}
+
+function loadCompted(){
+
+}
+
+    </script>
+  <body>
+  	<center>
+    <h1>Push is Sent!</h1>
+    <p>The message is sented from QYL.</p>    
+
+    <button class="button" onclick="goPush()"><span>Manual action for Apple </span></button>
+
+	</center>
+  </body>
+</html>
