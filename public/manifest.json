@@ -1,6 +1,6 @@
 {
   "name": "QYL™",
-  "start_url": "/",
+  "start_url": "/intro.html",
   "display": "fullscreen",
   "orientation": "any"
 }
